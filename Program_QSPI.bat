@@ -27,9 +27,10 @@ echo .
 echo OPTIONS
 echo 1 = Program u-boot
 echo 2 = Program Device Tree Blob
-echo 3 = Program Kernel (uImage)
-echo 4 = Program Kernel (xipImage)
-echo 5 = Program Rootfs
+echo 3 = Program Kernel (uImage with external RAM)
+echo 4 = Program Kernel (xipImage with external RAM)
+echo 5 = Program Kernel (xipImage with no external RAM)
+echo 6 = Program Rootfs
 echo 9 = Exit
 SET /P REPLY=Choose option: 
 if "%REPLY%"== "1" (goto PROGRAM)
@@ -37,6 +38,7 @@ if "%REPLY%"== "2" (goto PROGRAM)
 if "%REPLY%"== "3" (goto PROGRAM)
 if "%REPLY%"== "4" (goto PROGRAM)
 if "%REPLY%"== "5" (goto PROGRAM)
+if "%REPLY%"== "6" (goto PROGRAM)
 if "%REPLY%"== "9" (exit)
 echo ERROR: Please select from the list only.
 goto OPTIONS
@@ -63,8 +65,9 @@ echo ------------------------------------------------------------------------
 if "%REPLY%"== "1" GOTO UBOOT
 if "%REPLY%"== "2" GOTO DTB
 if "%REPLY%"== "3" GOTO KERNEL_UIMAGE
-if "%REPLY%"== "4" GOTO KERNEL_XIP
-if "%REPLY%"== "5" GOTO ROOTFS
+if "%REPLY%"== "4" GOTO KERNEL_XIP_EXTRAM
+if "%REPLY%"== "5" GOTO KERNEL_XIP
+if "%REPLY%"== "6" GOTO ROOTFS
 GOTO PROG_DONE
 
 @REM =====u-boot========
@@ -77,12 +80,17 @@ GOTO PROG_DONE
 "%BASE%\JLink.exe" -speed 12000 -if JTAG -device R7S721001 -CommanderScript load_spi_dtb.txt
 GOTO PROG_DONE
 
-@REM =====Kernel (uImage)========
+@REM =====Kernel (uImage with external RAM)========
 :KERNEL_UIMAGE
 "%BASE%\JLink.exe" -speed 12000 -if JTAG -device R7S721001_DualSPI -CommanderScript load_spi_kernel_uImage.txt
 GOTO PROG_DONE
 
-@REM =====Kernel (xipImage)========
+@REM =====Kernel (xipImage with external RAM)========
+:KERNEL_XIP
+"%BASE%\JLink.exe" -speed 12000 -if JTAG -device R7S721001_DualSPI -CommanderScript load_spi_kernel_xipImage_extRAM.txt
+GOTO PROG_DONE
+
+@REM =====Kernel (xipImage with no external RAM)========
 :KERNEL_XIP
 "%BASE%\JLink.exe" -speed 12000 -if JTAG -device R7S721001_DualSPI -CommanderScript load_spi_kernel_xipImage.txt
 GOTO PROG_DONE
