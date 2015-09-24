@@ -86,7 +86,7 @@ GOTO PROG_DONE
 GOTO PROG_DONE
 
 @REM =====Kernel (xipImage with external RAM)========
-:KERNEL_XIP
+:KERNEL_XIP_EXTRAM
 "%BASE%\JLink.exe" -speed 12000 -if JTAG -device R7S721001_DualSPI -CommanderScript load_spi_kernel_xipImage_extRAM.txt
 GOTO PROG_DONE
 
